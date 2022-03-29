@@ -37,6 +37,21 @@ namespace ToDoListMVC
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI(); //important so that we can use the default UI
+            services.Configure<IdentityOptions>(opts =>
+            {
+                opts.User.RequireUniqueEmail = true;
+                opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+                opts.Password.RequiredLength = 6;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireDigit = false;
+
+                opts.Lockout.AllowedForNewUsers = false;
+                opts.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+                opts.Lockout.MaxFailedAccessAttempts = 3;
+
+            });
             services.AddRazorPages();
             services.AddControllersWithViews();
         }
