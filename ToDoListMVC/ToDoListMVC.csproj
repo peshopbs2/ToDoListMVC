@@ -15,4 +15,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ToDoListMVC.BLL\ToDoListMVC.BLL.csproj" />
+    <ProjectReference Include="..\ToDoListMVC.DAL\ToDoListMVC.DAL.csproj" />
+    <ProjectReference Include="..\ToDoListMVC.Test\ToDoListMVC.Test.csproj" />
+  </ItemGroup>
+
 </Project>
