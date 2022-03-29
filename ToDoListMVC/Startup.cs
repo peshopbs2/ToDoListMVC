@@ -57,7 +57,7 @@ namespace ToDoListMVC
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<AppUser> userManager, ApplicationDbContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
 
             if (env.IsDevelopment())
@@ -81,7 +81,7 @@ namespace ToDoListMVC
             
             context.Database.EnsureCreated();
 
-            ApplicationDbInitializer.SeedUsers(userManager);
+            ApplicationDbInitializer.SeedUsers(userManager, roleManager);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
