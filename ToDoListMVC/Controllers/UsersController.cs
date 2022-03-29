@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ToDoListMVC.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     public class UsersController : Controller
     {
         // GET: UsersController
