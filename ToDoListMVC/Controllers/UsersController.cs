@@ -60,16 +60,35 @@ namespace ToDoListMVC.Controllers
         // GET: UsersController/Create
         public ActionResult Create()
         {
-            return View();
+            return View(new CreateAppUserViewModel());
         }
 
         // POST: UsersController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create([FromForm] CreateAppUserViewModel model)
         {
             try
             {
+                AppUser user = new AppUser()
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    CreatedAt = DateTime.Now,
+                    CreatedById = _userManager
+                        .GetUserAsync(User)
+                        .Result
+                        .Id
+                };
+
+                IdentityResult result = _userManager.CreateAsync(user, model.Password).Result;
+
+                if (result.Succeeded)
+                {
+                    _userManager.AddToRoleAsync(user, model.Role).Wait();
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
