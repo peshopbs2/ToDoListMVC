@@ -14,11 +14,19 @@ namespace ToDoListMVC.Data
         {
             var adminRoleName = configuration.GetSection("AdminUser").GetSection("RoleName").Value;
 
-            if(roleManager.FindByNameAsync(adminRoleName).Result == null)
+            if (roleManager.FindByNameAsync(adminRoleName).Result == null)
             {
                 roleManager.CreateAsync(new IdentityRole()
                 {
                     Name = adminRoleName
+                });
+            }
+
+            if (roleManager.FindByNameAsync("RegularUser").Result == null)
+            {
+                roleManager.CreateAsync(new IdentityRole()
+                {
+                    Name = "RegularUser"
                 });
             }
 
