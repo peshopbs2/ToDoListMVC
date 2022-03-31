@@ -80,7 +80,8 @@ namespace ToDoListMVC.Controllers
                     CreatedById = _userManager
                         .GetUserAsync(User)
                         .Result
-                        .Id
+                        .Id,
+                    EmailConfirmed = true
                 };
 
                 IdentityResult result = _userManager.CreateAsync(user, model.Password).Result;
