@@ -99,18 +99,52 @@ namespace ToDoListMVC.Controllers
         }
 
         // GET: UsersController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(string id)
         {
-            return View();
+            var userData = await _userManager.FindByIdAsync(id);
+            var user = new CreateAppUserViewModel()
+            {
+                UserName = userData.UserName,
+                FirstName = userData.FirstName,
+                LastName = userData.LastName,
+                Email = userData.Email,
+                Role = string.Join(
+                        ", ", _userManager.GetRolesAsync(userData).Result)
+
+            };
+            return View(user);
         }
 
         // POST: UsersController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(string id, CreateAppUserViewModel model)
         {
             try
             {
+                var user = await _userManager.FindByIdAsync(id);
+                user.UserName = model.UserName;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Email = model.Email;
+
+                if (model.Password != "")
+                {
+                    await _userManager.RemovePasswordAsync(user);
+                    await _userManager.AddPasswordAsync(user, model.Password);
+                }
+
+                IdentityResult result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    await _userManager.RemoveFromRolesAsync(user, new List<string>()
+                {
+                    "Admin", "RegularUser"
+                });
+
+                    await _userManager.AddToRoleAsync(user, model.Role);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
