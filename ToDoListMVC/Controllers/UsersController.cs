@@ -120,19 +120,37 @@ namespace ToDoListMVC.Controllers
         }
 
         // GET: UsersController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(string id)
         {
-            return View();
+            var userData = await _userManager.FindByIdAsync(id);
+            var user = new AppUserViewModel()
+            {
+                Id = userData.Id,
+                UserName = userData.UserName,
+                Email = userData.Email,
+                Roles = string.Join(
+                        ", ", _userManager.GetRolesAsync(userData).Result)
+            };
+            return View(user);
         }
 
         // POST: UsersController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(string id, AppUserViewModel model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                IdentityResult identityResult = await _userManager.DeleteAsync(
+                    await _userManager.FindByIdAsync(model.Id));
+                if (identityResult.Succeeded)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View();
+                }
             }
             catch
             {
