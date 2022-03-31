@@ -81,7 +81,7 @@ namespace ToDoListMVC
             
             context.Database.EnsureCreated();
 
-            ApplicationDbInitializer.SeedUsers(userManager, roleManager);
+            ApplicationDbInitializer.SeedUsers(userManager, roleManager, Configuration);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
