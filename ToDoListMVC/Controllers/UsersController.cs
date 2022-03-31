@@ -43,9 +43,18 @@ namespace ToDoListMVC.Controllers
         }
 
         // GET: UsersController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(string id)
         {
-            return View();
+            var userData = await _userManager.FindByIdAsync(id);
+            var user = new AppUserViewModel()
+            {
+                Id = userData.Id,
+                UserName = userData.UserName,
+                Email = userData.Email,
+                Roles = string.Join(
+                        ", ", _userManager.GetRolesAsync(userData).Result)
+            };
+            return View(user);
         }
 
         // GET: UsersController/Create
