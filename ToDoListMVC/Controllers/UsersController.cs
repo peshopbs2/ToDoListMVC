@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ToDoListMVC.Models;
 using ToDoListMVC.Models.Identity;
 using ToDoListMVC.Models.ViewModels;
+using ToDoListMVC.Models.ViewModels.Users;
 
 namespace ToDoListMVC.Controllers
 {
