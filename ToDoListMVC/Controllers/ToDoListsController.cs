@@ -130,7 +130,17 @@ namespace ToDoListMVC.Controllers
         // GET: ToDoListsController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var toDoList = _toDoListService.GetToDoListById(id);
+
+            return View(new ToDoListViewModel()
+            {
+                Id = toDoList.Id,
+                Title = toDoList.Title,
+                CreatedAt = toDoList.CreatedAt,
+                CreatedBy = toDoList.CreatedBy,
+                ModifiedAt = toDoList.ModifiedAt,
+                ModifiedBy = toDoList.ModifiedBy
+            });
         }
 
         // POST: ToDoListsController/Delete/5
@@ -140,6 +150,8 @@ namespace ToDoListMVC.Controllers
         {
             try
             {
+                _toDoListService.Remove(id);
+                
                 return RedirectToAction(nameof(Index));
             }
             catch
