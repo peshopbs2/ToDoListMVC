@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ToDoListMVC.DAL.Abstractions;
+using ToDoListMVC.DAL.Data;
 
 namespace ToDoListMVC.DAL.Repositories
 {
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
-        private readonly DbContext _context;
-        public Repository(DbContext dbContext)
+        private readonly ToDoDbContext _context;
+        public Repository(ToDoDbContext dbContext)
         {
             _context = dbContext;
         }
