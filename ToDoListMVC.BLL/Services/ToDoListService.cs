@@ -17,11 +17,13 @@ namespace ToDoListMVC.BLL.Services
             _toDoListRepository = toDoListRepostiory;
         }
 
-        public bool Create(string title)
+        public bool Create(string title, string userId)
         {
             return _toDoListRepository.Create(new ToDoList()
             {
-                Title = title
+                Title = title,
+                CreatedBy = userId,
+                CreatedAt = DateTime.Now
             });
         }
 

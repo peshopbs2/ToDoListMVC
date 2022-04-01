@@ -61,17 +61,26 @@ namespace ToDoListMVC.Controllers
         // GET: ToDoListsController/Create
         public ActionResult Create()
         {
-            return View();
+            return View(new CreateToDoListViewModel());
         }
 
         // POST: ToDoListsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([FromForm] CreateToDoListViewModel model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var user = await _userManager.GetUserAsync(User);
+                bool result = _toDoListService.Create(model.Title, user.Id);
+                if (result)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View();
+                }
             }
             catch
             {

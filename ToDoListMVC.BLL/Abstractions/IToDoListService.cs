@@ -9,7 +9,7 @@ namespace ToDoListMVC.BLL.Abstractions
 {
     public interface IToDoListService
     {
-        bool Create(string title);
+        bool Create(string title, string userId);
         bool Update(int toDoListId, string title);
         List<ToDoList> GetAll();
         ToDoList GetToDoListById(int toDoListId);
