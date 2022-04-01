@@ -55,7 +55,17 @@ namespace ToDoListMVC.Controllers
         // GET: ToDoListsController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var toDoList = _toDoListService.GetToDoListById(id);
+
+            return View(new ToDoListViewModel()
+            {
+                Id = toDoList.Id,
+                Title = toDoList.Title,
+                CreatedAt = toDoList.CreatedAt,
+                CreatedBy = toDoList.CreatedBy, 
+                ModifiedAt = toDoList.ModifiedAt,
+                ModifiedBy = toDoList.ModifiedBy
+            });
         }
 
         // GET: ToDoListsController/Create
@@ -91,16 +101,24 @@ namespace ToDoListMVC.Controllers
         // GET: ToDoListsController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var toDoList = _toDoListService.GetToDoListById(id);
+
+            return View(new CreateToDoListViewModel()
+            {
+                Title = toDoList.Title
+            });
         }
 
         // POST: ToDoListsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, [FromForm] CreateToDoListViewModel model)
         {
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
+                _toDoListService.Update(id, model.Title, user.Id);
                 return RedirectToAction(nameof(Index));
             }
             catch

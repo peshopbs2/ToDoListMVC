@@ -10,7 +10,7 @@ namespace ToDoListMVC.BLL.Abstractions
     public interface IToDoListService
     {
         bool Create(string title, string userId);
-        bool Update(int toDoListId, string title);
+        bool Update(int toDoListId, string title, string userId);
         List<ToDoList> GetAll();
         ToDoList GetToDoListById(int toDoListId);
         bool Remove(int toDoListId);

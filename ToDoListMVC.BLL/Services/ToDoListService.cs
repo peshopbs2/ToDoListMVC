@@ -51,10 +51,12 @@ namespace ToDoListMVC.BLL.Services
             );
         }
 
-        public bool Update(int toDoListId, string title)
+        public bool Update(int toDoListId, string title, string userId)
         {
             var toDoList = _toDoListRepository.GetById(toDoListId);
             toDoList.Title = title;
+            toDoList.ModifiedAt = DateTime.Now;
+            toDoList.ModifiedBy = userId;
             return _toDoListRepository.Update(toDoList);
         }
     }
