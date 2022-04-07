@@ -41,9 +41,19 @@ namespace ToDoListMVC.BLL.Services
 
         public List<ToDoList> GetToDoListsByUser(string userId)
         {
-            //TODO: change the predicate so we see shared and not only created by us lists
-            return _toDoListRepository
+           
+            var lists = _toDoListRepository
                 .Find(item => item.CreatedBy == userId);
+
+            var sharedLists = _shareRepository.Find(item => item.UserId == userId)
+                .Select(item => item.ToDoList)
+                .ToList();
+
+            lists.AddRange(sharedLists);
+
+            return lists
+                .OrderBy(item => item.Id)
+                .ToList();
         }
 
         public bool Remove(int toDoListId)
