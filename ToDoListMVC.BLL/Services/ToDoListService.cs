@@ -41,7 +41,7 @@ namespace ToDoListMVC.BLL.Services
 
         public List<ToDoList> GetToDoListsByUser(string userId)
         {
-           
+
             var lists = _toDoListRepository
                 .Find(item => item.CreatedBy == userId);
 
@@ -56,11 +56,34 @@ namespace ToDoListMVC.BLL.Services
                 .ToList();
         }
 
-        public bool Remove(int toDoListId)
+        public bool Remove(int toDoListId, string userId)
         {
-            return _toDoListRepository.Remove(
-                _toDoListRepository.GetById(toDoListId)
-            );
+            var toDoList = _toDoListRepository.GetById(toDoListId);
+            if (toDoList == null)
+            {
+                return false;
+            }
+
+            if (toDoList.CreatedBy == userId)
+            {
+                return _toDoListRepository.Remove(
+                    _toDoListRepository.GetById(toDoListId)
+                );
+            }
+            else if (IsShared(toDoListId, userId))
+            {
+                var share = _shareRepository.Get(item => item.ToDoListId == toDoListId && item.UserId == userId);
+                return _shareRepository.Remove(share);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsShared(int toDoListId, string userId)
+        {
+            return _shareRepository.Get(item => item.ToDoListId == toDoListId && item.UserId == userId) != null;
         }
 
         public bool RemoveShare(int toDoListId, string userId)
@@ -86,7 +109,7 @@ namespace ToDoListMVC.BLL.Services
             }
 
             bool alreadyShared = _shareRepository.Get(item => item.ToDoListId == toDoListId && item.UserId == userId) != null;
-            if(alreadyShared)
+            if (alreadyShared)
             {
                 //already shared
                 return false;
@@ -110,5 +133,6 @@ namespace ToDoListMVC.BLL.Services
             toDoList.ModifiedBy = userId;
             return _toDoListRepository.Update(toDoList);
         }
+
     }
 }

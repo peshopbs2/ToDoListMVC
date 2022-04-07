@@ -146,11 +146,13 @@ namespace ToDoListMVC.Controllers
         // POST: ToDoListsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
-                _toDoListService.Remove(id);
+                var user = await _userManager.GetUserAsync(User);
+
+                _toDoListService.Remove(id, user.Id);
                 
                 return RedirectToAction(nameof(Index));
             }
