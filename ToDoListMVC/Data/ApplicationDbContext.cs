@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ToDoListMVC.Models.Identity;
+using ToDoListMVC.Models.ViewModels.ToDoItems;
 
 namespace ToDoListMVC.Data
 {
@@ -14,5 +15,6 @@ namespace ToDoListMVC.Data
             : base(options)
         {
         }
+        public DbSet<ToDoListMVC.Models.ViewModels.ToDoItems.ToDoItemViewModel> ToDoItemViewModel { get; set; }
     }
 }

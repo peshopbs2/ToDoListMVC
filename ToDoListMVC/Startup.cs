@@ -42,7 +42,7 @@ namespace ToDoListMVC
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IToDoListService, ToDoListService>();
-
+            services.AddTransient<IToDoItemService, ToDoItemService>();
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()

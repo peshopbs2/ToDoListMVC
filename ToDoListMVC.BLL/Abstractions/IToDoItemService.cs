@@ -7,7 +7,7 @@ using ToDoListMVC.DAL.Entities;
 
 namespace ToDoListMVC.BLL.Abstractions
 {
-    interface IToDoItemService
+    public interface IToDoItemService
     {
         bool Create(int toDoListId, string title, string description, bool isComplete, string userId);
         bool Update(int toDoItemId, int toDoListId, string title, string description, bool isComplete, string userId);
