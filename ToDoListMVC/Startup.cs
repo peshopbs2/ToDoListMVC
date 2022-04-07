@@ -11,6 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoListMVC.BLL.Abstractions;
+using ToDoListMVC.BLL.Services;
+using ToDoListMVC.DAL.Abstractions;
+using ToDoListMVC.DAL.Data;
+using ToDoListMVC.DAL.Repositories;
 using ToDoListMVC.Data;
 using ToDoListMVC.Models.Identity;
 
@@ -31,7 +36,12 @@ namespace ToDoListMVC
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ToDoDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<IToDoListService, ToDoListService>();
 
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
