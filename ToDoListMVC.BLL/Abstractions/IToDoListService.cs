@@ -15,5 +15,7 @@ namespace ToDoListMVC.BLL.Abstractions
         ToDoList GetToDoListById(int toDoListId);
         bool Remove(int toDoListId);
         List<ToDoList> GetToDoListsByUser(string userId);
+        bool Share(int toDoListId, string userId, string sharedBy);
+        bool RemoveShare(int toDoListId, string userId);
     }
 }

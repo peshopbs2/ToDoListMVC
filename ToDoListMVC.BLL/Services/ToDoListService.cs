@@ -12,9 +12,11 @@ namespace ToDoListMVC.BLL.Services
     public class ToDoListService : IToDoListService
     {
         private readonly IRepository<ToDoList> _toDoListRepository;
-        public ToDoListService(IRepository<ToDoList> toDoListRepostiory)
+        private readonly IRepository<ToDoListShare> _shareRepository;
+        public ToDoListService(IRepository<ToDoList> toDoListRepostiory, IRepository<ToDoListShare> shareRepository)
         {
             _toDoListRepository = toDoListRepostiory;
+            _shareRepository = shareRepository;
         }
 
         public bool Create(string title, string userId)
@@ -49,6 +51,45 @@ namespace ToDoListMVC.BLL.Services
             return _toDoListRepository.Remove(
                 _toDoListRepository.GetById(toDoListId)
             );
+        }
+
+        public bool RemoveShare(int toDoListId, string userId)
+        {
+            var share = _shareRepository.Get(item => item.ToDoListId == toDoListId && item.UserId == userId);
+            if (share != null)
+            {
+                return _shareRepository.Remove(share);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool Share(int toDoListId, string userId, string sharedById)
+        {
+            var toDoList = GetToDoListById(toDoListId);
+            if (toDoList == null)
+            {
+                //no todo list, nothing to do here...
+                return false;
+            }
+
+            bool alreadyShared = _shareRepository.Get(item => item.ToDoListId == toDoListId && item.UserId == userId) != null;
+            if(alreadyShared)
+            {
+                //already shared
+                return false;
+            }
+
+            bool result = _shareRepository.Create(new ToDoListShare()
+            {
+                ToDoListId = toDoListId,
+                UserId = userId,
+                CreatedBy = sharedById
+            });
+
+            return result;
         }
 
         public bool Update(int toDoListId, string title, string userId)
