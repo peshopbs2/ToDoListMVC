@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using ToDoListMVC.BLL.Abstractions;
 using ToDoListMVC.DAL.Entities;
 using ToDoListMVC.Models.Identity;
 using ToDoListMVC.Models.ViewModels.ToDoLists;
+using ToDoListMVC.Models.ViewModels.Users;
 
 namespace ToDoListMVC.Controllers
 {
@@ -155,6 +157,52 @@ namespace ToDoListMVC.Controllers
                 _toDoListService.Remove(id, user.Id);
                 
                 return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
+        // GET: ToDoListsController/Edit/5
+        public async Task<ActionResult> Share(int id)
+        {
+            var toDoList = _toDoListService.GetToDoListById(id);
+            var user = await _userManager.GetUserAsync(User);
+
+            return View(new ShareToDoListViewModel()
+            {
+                ToDoListId = id,
+                Title = toDoList.Title,
+                Users = _userManager.Users
+                .Where(item => item.UserName != user.UserName)
+                .Select(item => new SelectListItem()
+                {
+                    Text = item.UserName,
+                    Value = item.Id
+                })
+                .ToList()
+            });
+        }
+
+        // POST: ToDoListsController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Share(int id, [FromForm] ShareToDoListViewModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = _toDoListService.Share(id, model.ShareUserId, user.Id);
+                if (result)
+                {
+                    return RedirectToAction(nameof(Index));
+                } else
+                {
+                    ModelState.AddModelError("ShareUserId", "The todo list is already shared with that user.");
+                    return View();
+                }
             }
             catch
             {
