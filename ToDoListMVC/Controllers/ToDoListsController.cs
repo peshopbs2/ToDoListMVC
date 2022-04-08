@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ToDoListMVC.BLL.Abstractions;
 using ToDoListMVC.DAL.Entities;
 using ToDoListMVC.Models.Identity;
+using ToDoListMVC.Models.ViewModels.ToDoItems;
 using ToDoListMVC.Models.ViewModels.ToDoLists;
 using ToDoListMVC.Models.ViewModels.Users;
 
@@ -63,6 +64,26 @@ namespace ToDoListMVC.Controllers
             {
                 Id = toDoList.Id,
                 Title = toDoList.Title,
+                Items = toDoList.Items
+                .Select(item => new ToDoItemViewModel()
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    IsComplete = item.IsComplete,
+                    Assignees = string.Join(", ", item.Assigns
+                    .Select(assign => _userManager.GetUserNameAsync(
+                        _userManager.FindByIdAsync(assign.UserId).Result
+                        ).Result
+                    )
+                    .ToList()),
+                    ToDoListTitle = item.ToDoList.Title,
+                    ToDoListId = item.ToDoList.Id,
+                    CreatedAt = item.CreatedAt,
+                    CreatedBy = item.CreatedBy,
+                    ModifiedAt = item.ModifiedAt,
+                    ModifiedBy = item.ModifiedBy
+                }).ToList(),
                 CreatedAt = toDoList.CreatedAt,
                 CreatedBy = toDoList.CreatedBy, 
                 ModifiedAt = toDoList.ModifiedAt,

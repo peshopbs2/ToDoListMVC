@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoListMVC.DAL.Data;
 
 namespace ToDoListMVC.DAL.Migrations
 {
     [DbContext(typeof(ToDoDbContext))]
-    partial class ToDoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220407173051_ToDoItems")]
+    partial class ToDoItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,39 +56,7 @@ namespace ToDoListMVC.DAL.Migrations
 
                     b.HasIndex("ToDoListId");
 
-                    b.ToTable("ToDoItems");
-                });
-
-            modelBuilder.Entity("ToDoListMVC.DAL.Entities.ToDoItemAssign", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ToDoItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ToDoItemId");
-
-                    b.ToTable("ToDoItemAssign");
+                    b.ToTable("ToDoItem");
                 });
 
             modelBuilder.Entity("ToDoListMVC.DAL.Entities.ToDoList", b =>
@@ -159,17 +129,6 @@ namespace ToDoListMVC.DAL.Migrations
                     b.Navigation("ToDoList");
                 });
 
-            modelBuilder.Entity("ToDoListMVC.DAL.Entities.ToDoItemAssign", b =>
-                {
-                    b.HasOne("ToDoListMVC.DAL.Entities.ToDoItem", "ToDoItem")
-                        .WithMany("Assigns")
-                        .HasForeignKey("ToDoItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ToDoItem");
-                });
-
             modelBuilder.Entity("ToDoListMVC.DAL.Entities.ToDoListShare", b =>
                 {
                     b.HasOne("ToDoListMVC.DAL.Entities.ToDoList", "ToDoList")
@@ -179,11 +138,6 @@ namespace ToDoListMVC.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("ToDoList");
-                });
-
-            modelBuilder.Entity("ToDoListMVC.DAL.Entities.ToDoItem", b =>
-                {
-                    b.Navigation("Assigns");
                 });
 
             modelBuilder.Entity("ToDoListMVC.DAL.Entities.ToDoList", b =>

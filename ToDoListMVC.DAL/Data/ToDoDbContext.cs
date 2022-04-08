@@ -11,6 +11,7 @@ namespace ToDoListMVC.DAL.Data
     public class ToDoDbContext : DbContext
     {
         public DbSet<ToDoList> ToDoLists { get; set; }
+        public DbSet<ToDoItem> ToDoItems { get; set; }
         public ToDoDbContext(DbContextOptions<ToDoDbContext> options)
             : base(options)
         {

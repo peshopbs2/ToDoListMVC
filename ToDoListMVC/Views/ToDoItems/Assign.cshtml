@@ -1,0 +1,34 @@
+﻿@model ToDoListMVC.Models.ViewModels.ToDoItems.AssignToDoItemViewModel
+
+@{
+    ViewData["Title"] = "Assign";
+}
+
+<h1>Assign</h1>
+
+<h4>@Model.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Assign">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="AssignUserId" class="control-label"></label>
+                <select asp-for="AssignUserId" asp-items="Model.Users" class="form-control">
+                </select>
+                <span asp-validation-for="AssignUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Go to To Do Items</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
