@@ -78,6 +78,7 @@ namespace ToDoListMVC.Controllers
                     )
                     .ToList()),
                     ToDoListTitle = item.ToDoList.Title,
+                    ToDoListId = item.ToDoList.Id,
                     CreatedAt = item.CreatedAt,
                     CreatedBy = item.CreatedBy,
                     ModifiedAt = item.ModifiedAt,

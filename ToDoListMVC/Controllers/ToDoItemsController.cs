@@ -65,7 +65,31 @@ namespace ToDoListMVC.Controllers
         // GET: ToDoItemsController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var item = _toDoItemService.GetToDoItemById(id);
+            if(item==null)
+            {
+                return NotFound();
+            }
+            var model = new ToDoItemViewModel()
+            {
+                Id = item.Id,
+                Title = item.Title,
+                Description = item.Description,
+                IsComplete = item.IsComplete,
+                Assignees = string.Join(", ", item.Assigns
+                    .Select(assign => _userManager.GetUserNameAsync(
+                        _userManager.FindByIdAsync(assign.UserId).Result
+                        ).Result
+                    )
+                    .ToList()),
+                ToDoListTitle = item.ToDoList.Title,
+                ToDoListId = item.ToDoListId,
+                CreatedAt = item.CreatedAt,
+                CreatedBy = item.CreatedBy,
+                ModifiedAt = item.ModifiedAt,
+                ModifiedBy = item.ModifiedBy
+            };
+            return View(model);
         }
 
         // GET: ToDoItemsController/Create
