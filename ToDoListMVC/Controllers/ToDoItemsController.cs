@@ -130,16 +130,32 @@ namespace ToDoListMVC.Controllers
         // GET: ToDoItemsController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var item = _toDoItemService.GetToDoItemById(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            var model = new CreateToDoItemViewModel()
+            {
+                Id = item.Id,
+                Title = item.Title,
+                Description = item.Description,
+                IsComplete = item.IsComplete,
+                ToDoListId = item.ToDoListId
+            };
+            return View(model);
         }
 
         // POST: ToDoItemsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, [FromForm] CreateToDoItemViewModel model)
         {
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
+                _toDoItemService.Update(id, model.ToDoListId, model.Title, model.Description, model.IsComplete, user.Id);
                 return RedirectToAction(nameof(Index));
             }
             catch

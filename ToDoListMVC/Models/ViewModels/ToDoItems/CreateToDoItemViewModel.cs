@@ -11,6 +11,7 @@ namespace ToDoListMVC.Models.ViewModels.ToDoItems
         public string Title { get; set; }
         public string Description { get; set; }
         public bool IsComplete { get; set; }
+        public int ToDoListId { get; set; }
 
     }
 }
