@@ -19,5 +19,7 @@ namespace ToDoListMVC.BLL.Abstractions
         bool ToggleComplete(int toDoItemId);
 
         bool AssignToDoItemToUser(int toDoItemId, string userId);
+
+        List<string> GetUsersWithAccessToToDoItem(int toDoItemId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,6 +204,55 @@ namespace ToDoListMVC.Controllers
             {
                 _toDoItemService.Remove(id);
                 return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public async Task<ActionResult> Assign(int id)
+        {
+            var toDoItem = _toDoItemService.GetToDoItemById(id);
+            var user = await _userManager.GetUserAsync(User);
+
+            var users = _toDoItemService.GetUsersWithAccessToToDoItem(toDoItem.Id)
+                .Select(userId => new SelectListItem()
+                {
+                    Text = _userManager.FindByIdAsync(userId).Result.UserName,
+                    Value = userId
+                })
+                .ToList();
+            var assignees = toDoItem.Assigns.Select(item => item.UserId);
+            foreach (var userId in assignees)
+            {
+                users.RemoveAll(item => item.Value == userId);
+            }
+            return View(new AssignToDoItemViewModel()
+            {
+                Title = toDoItem.Title,
+                Users = users
+            });
+        }
+
+        // POST: ToDoListsController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Assign(int id, [FromForm] AssignToDoItemViewModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = _toDoItemService.AssignToDoItemToUser(id, model.AssignUserId);
+                if (result)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("AssignUserId", "The todo item is already assigned with that user.");
+                    return View();
+                }
             }
             catch
             {

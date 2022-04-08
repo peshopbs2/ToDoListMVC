@@ -66,6 +66,15 @@ namespace ToDoListMVC.BLL.Services
             return _toDoItemRepository.Find(item => item.Assigns.Any(assign => assign.UserId == userId && assign.ToDoItemId == item.Id));
         }
 
+        public List<string> GetUsersWithAccessToToDoItem(int toDoItemId)
+        {
+            var item = _toDoItemRepository.GetById(toDoItemId);
+            List<string> users = item.ToDoList.Shares.Select(item => item.UserId).ToList();
+            users.Add(item.ToDoList.CreatedBy);
+
+            return users;
+        }
+
         public bool Remove(int toDoItemId)
         {
             return _toDoItemRepository.RemoveById(toDoItemId);
