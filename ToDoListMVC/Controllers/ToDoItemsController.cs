@@ -16,10 +16,12 @@ namespace ToDoListMVC.Controllers
     public class ToDoItemsController : Controller
     {
         private IToDoItemService _toDoItemService;
+        private IToDoListService _toDoListService;
         private UserManager<AppUser> _userManager;
-        public ToDoItemsController(IToDoItemService toDoItemService, UserManager<AppUser> userManager)
+        public ToDoItemsController(IToDoItemService toDoItemService, IToDoListService toDoListService, UserManager<AppUser> userManager)
         {
             _toDoItemService = toDoItemService;
+            _toDoListService = toDoListService;
             _userManager = userManager;
         }
         // GET: ToDoItemsController
@@ -67,18 +69,32 @@ namespace ToDoListMVC.Controllers
         }
 
         // GET: ToDoItemsController/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
+            var toDoList = _toDoListService.GetToDoListById(id);
+            if(toDoList==null)
+            {
+                return NotFound();
+            }
+
             return View();
         }
 
         // POST: ToDoItemsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(int id, [FromForm] CreateToDoItemViewModel model)
         {
             try
             {
+                var toDoList = _toDoListService.GetToDoListById(id);
+                if (toDoList == null)
+                {
+                    return NotFound();
+                }
+                var user = await _userManager.GetUserAsync(User);
+
+                _toDoItemService.Create(id, model.Title, model.Description, model.IsComplete, user.Id);
                 return RedirectToAction(nameof(Index));
             }
             catch

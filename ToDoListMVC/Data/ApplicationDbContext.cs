@@ -16,5 +16,6 @@ namespace ToDoListMVC.Data
         {
         }
         public DbSet<ToDoListMVC.Models.ViewModels.ToDoItems.ToDoItemViewModel> ToDoItemViewModel { get; set; }
+        public DbSet<ToDoListMVC.Models.ViewModels.ToDoItems.CreateToDoItemViewModel> CreateToDoItemViewModel { get; set; }
     }
 }
