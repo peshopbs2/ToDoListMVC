@@ -259,5 +259,17 @@ namespace ToDoListMVC.Controllers
                 return View();
             }
         }
+
+        public ActionResult Toggle(int id)
+        {
+            var item = _toDoItemService.GetToDoItemById(id);
+            if(item==null)
+            {
+                return NotFound();
+            }
+
+            _toDoItemService.ToggleComplete(id);
+            return RedirectToAction("Index");
+        }
     }
 }
