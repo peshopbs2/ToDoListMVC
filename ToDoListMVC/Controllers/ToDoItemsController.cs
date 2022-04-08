@@ -151,7 +151,31 @@ namespace ToDoListMVC.Controllers
         // GET: ToDoItemsController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var item = _toDoItemService.GetToDoItemById(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            var model = new ToDoItemViewModel()
+            {
+                Id = item.Id,
+                Title = item.Title,
+                Description = item.Description,
+                IsComplete = item.IsComplete,
+                Assignees = string.Join(", ", item.Assigns
+                    .Select(assign => _userManager.GetUserNameAsync(
+                        _userManager.FindByIdAsync(assign.UserId).Result
+                        ).Result
+                    )
+                    .ToList()),
+                ToDoListTitle = item.ToDoList.Title,
+                ToDoListId = item.ToDoListId,
+                CreatedAt = item.CreatedAt,
+                CreatedBy = item.CreatedBy,
+                ModifiedAt = item.ModifiedAt,
+                ModifiedBy = item.ModifiedBy
+            };
+            return View(model);
         }
 
         // POST: ToDoItemsController/Delete/5
@@ -161,6 +185,7 @@ namespace ToDoListMVC.Controllers
         {
             try
             {
+                _toDoItemService.Remove(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
