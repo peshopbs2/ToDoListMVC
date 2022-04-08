@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +15,7 @@ using ToDoListMVC.Models.ViewModels.ToDoItems;
 
 namespace ToDoListMVC.Controllers
 {
+    [Authorize]
     public class ToDoItemsController : Controller
     {
         private IToDoItemService _toDoItemService;
